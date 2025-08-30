@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li {
+      background: #f1f1f1;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    ul li:hover {
+      background: #dfe6e9;
+    }
+    button {
+      background: #0984e3;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      margin-top: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #74b9ff;
+    }
+    .result {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <h2 id="question">Question text</h2>
+    <ul id="answer-buttons"></ul>
+    <button id="next-btn">Next</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What does HTML stand for?",
+        answers: [
+          { text: "Hyper Text Markup Language", correct: true },
+          { text: "High Tech Machine Learning", correct: false },
+          { text: "Hyper Transfer Makeup Language", correct: false },
+          { text: "Home Tool Markup Language", correct: false }
+        ]
+      },
+      {
+        question: "Which language is used for styling web pages?",
+        answers: [
+          { text: "Python", correct: false },
+          { text: "CSS", correct: true },
+          { text: "Java", correct: false },
+          { text: "C++", correct: false }
+        ]
+      },
+      {
+        question: "Which is not a JavaScript framework?",
+        answers: [
+          { text: "React", correct: false },
+          { text: "Angular", correct: false },
+          { text: "Vue", correct: false },
+          { text: "Django", correct: true }
+        ]
+      },
+      {
+        question: "Inside which HTML element do we put JavaScript?",
+        answers: [
+          { text: "<script>", correct: true },
+          { text: "<js>", correct: false },
+          { text: "<javascript>", correct: false },
+          { text: "<code>", correct: false }
+        ]
+      }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const resultContainer = document.getElementById("result");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      nextButton.innerHTML = "Next";
+      resultContainer.innerHTML = "";
+      showQuestion();
+    }
+
+    function showQuestion() {
+      resetState();
+      let currentQuestion = questions[currentQuestionIndex];
+      questionElement.innerHTML = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const li = document.createElement("li");
+        li.innerHTML = answer.text;
+        li.addEventListener("click", () => selectAnswer(answer, li));
+        answerButtons.appendChild(li);
+      });
+    }
+
+    function resetState() {
+      while (answerButtons.firstChild) {
+        answerButtons.removeChild(answerButtons.firstChild);
+      }
+    }
+
+    function selectAnswer(answer, selectedLi) {
+      const lis = answerButtons.querySelectorAll("li");
+      lis.forEach(li => li.style.pointerEvents = "none");
+
+      if (answer.correct) {
+        selectedLi.style.background = "#55efc4"; // green
+        score++;
+      } else {
+        selectedLi.style.background = "#ff7675"; // red
+      }
+    }
+
+    function showResult() {
+      resetState();
+      questionElement.innerHTML = "Quiz Completed!";
+      resultContainer.innerHTML = `Your Score: ${score} / ${questions.length}`;
+      nextButton.innerHTML = "Restart";
+    }
+
+    nextButton.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    startQuiz();
+  </script>
+
+</body>
+</html>
